@@ -9,21 +9,23 @@ import SwiftUI
 
 @available(iOS 15.0, *)
 struct AwardsView: View {
+    let awards = Award.getAwards()
+    let columns = [ GridItem(.adaptive(minimum: 160, maximum: 200)) ]
+    var activeAwards: [Award] {
+        awards.filter { $0.awarded }
+    }
     var body: some View {
         NavigationView {
-            VStack {
-                ScrollView {
-                    LoadingView()
-                        .frame(width: 250, height: 250)
-                    GradientRectangles()
-                        .frame(width: 250, height: 250)
-                    PathView()
-                        .frame(width: 250, height: 250)
-                    CurvesView()
-                        .frame(width: 250, height: 250)
+            CustomGridView(items: activeAwards, columns: 2) {
+                award, itemSize in
+                VStack(spacing: 0) {
+                    award.awardView
+                    Text("\(award.title)")
                 }
+                .frame(width: itemSize, height: itemSize)
             }
-            .navigationBarTitle("Awards")
+            
+            .navigationBarTitle("Awards: \(activeAwards.count)" )
         }
     }
 }
